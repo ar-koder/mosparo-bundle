@@ -1,0 +1,6 @@
+branches: ["main"]
+maintained_branches: ["main"]
+current_branch: "main"
+dev_branch: "main"
+dev_branch_alias: "main"
+doc_dir: "doc/"

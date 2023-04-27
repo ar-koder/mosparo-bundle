@@ -1,0 +1,25 @@
+services:
+    mosparo.client:
+        class: Mosparo\MosparoBundle\Services\MosparoClient
+        lazy: true
+        arguments:
+            - '%mosparo.instance_url%'
+            - '%mosparo.public_key%'
+            - '%mosparo.private_key%'
+            - '%mosparo.guzzle_options%'
+
+    Mosparo\MosparoBundle\Form\Type\MosparoType:
+        arguments:
+            - '%mosparo.instance_url%'
+            - '%mosparo.uuid%'
+            - '%mosparo.public_key%'
+            - '%mosparo.private_key%'
+        tags:
+            - { name: form.type }
+
+    Mosparo\MosparoBundle\Validator\IsValidMosparoValidator:
+        arguments:
+            - '@mosparo.client'
+            - '@request_stack'
+        tags:
+            - { name: validator.constraint_validator, alias: is_valid_mosparo_validator }

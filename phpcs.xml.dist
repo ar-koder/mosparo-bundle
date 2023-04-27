@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+
+    <rule ref="PSR2"/>
+    <rule ref="PSR12">
+        <exclude name="PSR12.Operators.OperatorSpacing" />
+    </rule>
+
+    <file>src/</file>
+    <file>tests/</file>
+
+    <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+
+    <rule ref="Generic.CodeAnalysis">
+        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+    </rule>
+    <rule ref="Generic.Files">
+        <exclude name="Generic.Files.EndFileNoNewline"/>
+        <exclude name="Generic.Files.LowercasedFilename"/>
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+
+    <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
+    <rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing">
+        <properties>
+            <property name="equalsSpacing" value="1"/>
+        </properties>
+    </rule>
+    <rule ref="Squiz.Scope"/>
+    <rule ref="Squiz.Strings"/>
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <properties>
+            <property name="spacing" value="1" />
+        </properties>
+    </rule>
+    <rule ref="Squiz.WhiteSpace">
+        <exclude name="Squiz.WhiteSpace.MemberVarSpacing"/>
+        <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace"/>
+        <exclude name="Squiz.WhiteSpace.FunctionSpacing"/>
+        <exclude name="Squiz.WhiteSpace.SemicolonSpacing"/>
+        <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
+        <exclude name="Squiz.WhiteSpace.OperatorSpacing"/>
+
+    </rule>
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="spacingBeforeFirst" value="0"/>
+            <property name="spacingAfterLast" value="0"/>
+        </properties>
+    </rule>
+
+</ruleset>
