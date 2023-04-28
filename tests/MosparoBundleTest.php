@@ -27,8 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class MosparoBundleTest extends TestCase
 {

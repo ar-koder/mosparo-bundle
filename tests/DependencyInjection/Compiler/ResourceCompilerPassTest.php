@@ -28,8 +28,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class ResourceCompilerPassTest extends TestCase
 {

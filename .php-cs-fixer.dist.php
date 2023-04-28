@@ -53,6 +53,7 @@ return $config
         'blank_line_between_import_groups' => false,
         'no_trailing_comma_in_singleline' => false,
         'declare_strict_types' => true,
+        'php_unit_test_class_requires_covers' => false,
         'concat_space' => ['spacing' => 'one']
     ])
 ;

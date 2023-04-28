@@ -34,8 +34,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class MosparoClientTest extends TestCase
 {

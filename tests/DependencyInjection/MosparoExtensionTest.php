@@ -28,8 +28,6 @@ use Symfony\Component\Yaml\Parser;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class MosparoExtensionTest extends TestCase
 {

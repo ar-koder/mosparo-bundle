@@ -26,8 +26,6 @@ use Symfony\Component\Form\Test\TypeTestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class MosparoTypeTest extends TypeTestCase
 {

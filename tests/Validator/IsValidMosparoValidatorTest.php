@@ -37,8 +37,6 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
  * @extends ConstraintValidatorTestCase<IsValidMosparoValidator>
  *
  * @internal
- *
- * @coversNothing
  */
 class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
 {

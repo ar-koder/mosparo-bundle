@@ -30,8 +30,6 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 class FormNormalizerTest extends TestCase
 {
