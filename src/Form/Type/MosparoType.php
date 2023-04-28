@@ -11,10 +11,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MosparoType extends AbstractType
 {
     public function __construct(
-        private readonly string $instanceUrl,
-        private readonly string $uuid,
-        private readonly string $publicKey,
-        private readonly string $privateKey,
+        private string $instanceUrl,
+        private string $uuid,
+        private string $publicKey,
+        private string $privateKey,
     ) {
     }
 

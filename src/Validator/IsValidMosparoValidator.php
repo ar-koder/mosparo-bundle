@@ -14,8 +14,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class IsValidMosparoValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly MosparoClient $client,
-        private readonly RequestStack $requestStack,
+        private MosparoClient $client,
+        private RequestStack $requestStack,
     ) {
     }
 
