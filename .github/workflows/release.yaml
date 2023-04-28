@@ -3,13 +3,7 @@ name: Release
 on:
   workflow_run:
     workflows:
-      - "Linter: Code Syntax"
-      - "Linter: PHPStan"
-      - "Tests - Stable"
-      - "Tests - Lowest supported dependencies"
-      - "Tests - Maintained Symfony versions"
-      - "Tests - Upcoming PHP version"
-      - "Tests - Upcoming Symfony version"
+      - "Linter: PHPCS, PHPStan & PHPUnit with coverage"
     types:
       - "completed"
     branches:
