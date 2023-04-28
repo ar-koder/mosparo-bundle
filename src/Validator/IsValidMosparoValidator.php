@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
+declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 namespace Mosparo\MosparoBundle\Validator;
 
 use Mosparo\MosparoBundle\Serializer\FormNormalizer;
@@ -32,7 +50,8 @@ class IsValidMosparoValidator extends ConstraintValidator
 
             if (empty($mosparoSubmitToken) || empty($mosparoValidationToken)) {
                 $this->context->buildViolation($constraint::INVALID_TOKEN)
-                    ->addViolation();
+                    ->addViolation()
+                ;
 
                 return;
             }
@@ -49,18 +68,21 @@ class IsValidMosparoValidator extends ConstraintValidator
                     foreach ($result->getIssues() as $issue) {
                         if (!empty($issue['message'])) {
                             $this->context->buildViolation($issue['message'])
-                                ->addViolation();
+                                ->addViolation()
+                            ;
                         }
                     }
 
                     return;
                 }
                 $this->context->buildViolation($constraint::VERIFICATION_FAILED)
-                    ->addViolation();
+                    ->addViolation()
+                ;
             }
         } catch (\Exception|ExceptionInterface) {
             $this->context->buildViolation($constraint::ERROR)
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

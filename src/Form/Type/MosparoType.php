@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
+declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 namespace Mosparo\MosparoBundle\Form\Type;
 
 use Mosparo\MosparoBundle\Validator\IsValidMosparo;
@@ -20,21 +38,23 @@ class MosparoType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'label' => false,
-            'mapped' => false,
-            'required' => false,
-            'error_bubbling' => false,
-            'compound' => false,
-            'invalid_message' => 'The mosparo field is invalid.',
-            'constraints' => [new IsValidMosparo()],
-            'allowBrowserValidation' => false,
-            'cssResourceUrl' => '',
-            'designMode' => false,
-            'inputFieldSelector' => '[name]:not(.mosparo__ignored-field)',
-            'loadCssResource' => true,
-            'requestSubmitTokenOnInit' => true,
-        ]);
+        $resolver->setDefaults(
+            [
+                'label' => false,
+                'mapped' => false,
+                'required' => false,
+                'error_bubbling' => false,
+                'compound' => false,
+                'invalid_message' => 'The mosparo field is invalid.',
+                'constraints' => [new IsValidMosparo()],
+                'allowBrowserValidation' => false,
+                'cssResourceUrl' => '',
+                'designMode' => false,
+                'inputFieldSelector' => '[name]:not(.mosparo__ignored-field)',
+                'loadCssResource' => true,
+                'requestSubmitTokenOnInit' => true,
+            ]
+        );
 
         $resolver->setAllowedTypes('allowBrowserValidation', 'bool');
         $resolver->setAllowedTypes('designMode', 'bool');
@@ -44,7 +64,7 @@ class MosparoType extends AbstractType
         $resolver->setAllowedTypes('cssResourceUrl', 'string');
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['mosparo'] = [
             'instance_url' => $this->instanceUrl,

@@ -4,24 +4,44 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->ignoreDotFiles(true)
     ->ignoreVCS(true)
-    ->exclude(array('vendor'))
+    ->exclude([
+        'vendor'
+    ])
     ->files()
     ->name('*.php')
 ;
 
 $config = new PhpCsFixer\Config();
 
+$header = <<<'EOT'
+@package   MosparoBundle
+@author    Arnaud RITTI <arnaud.ritti@gmail.com>
+@copyright <YEAR> Arnaud RITTI
+@license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+@link      https://github.com/arnaud-ritti/mosparo-bundle
+EOT;
+
+$header = str_replace('<YEAR>', date('Y'), $header);
+
 return $config
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setFinder($finder)
-    ->setRules(array(
+    ->setRules([
+        '@PhpCsFixer' => true,
+        '@PSR12' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHPUnit48Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'fopen_flags' => false,
         'ordered_imports' => true,
+        'header_comment' => [
+            'header' => $header,
+            'comment_type' => 'PHPDoc',
+            'location' => 'after_open',
+            'separate' => 'both'
+        ],
         'protected_to_private' => false,
         // Part of @Symfony:risky in PHP-CS-Fixer 2.13.0. To be removed from the config file once upgrading
         'native_function_invocation' => ['include' => ['@compiler_optimized'], 'scope' => 'namespaced', 'strict' => true],
@@ -32,5 +52,7 @@ return $config
         'non_printable_character' => false,
         'blank_line_between_import_groups' => false,
         'no_trailing_comma_in_singleline' => false,
-    ))
+        'declare_strict_types' => true,
+        'concat_space' => ['spacing' => 'one']
+    ])
 ;

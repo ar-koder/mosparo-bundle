@@ -16,7 +16,13 @@ tests-coverage-view-in-browser: ## Open the generated HTML coverage in your defa
 
 ## —— Linters —————————————————————————————————
 linter-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
-	docker run --rm -it --pull always -w=/app -v $(shell pwd):/app oskarstark/php-cs-fixer-ga:latest --diff -vvv --using-cache=no
+	vendor/bin/simple-phpunit install
+	vendor/bin/phpstan analyse
+	vendor/bin/phpcs ./src ./tests
+	vendor/bin/php-cs-fixer fix --diff -vvv --using-cache=no
+fix-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
+	vendor/bin/phpcbf ./src ./tests
+	vendor/bin/php-cs-fixer fix --diff --dry-run -vvv --using-cache=no
 linter-docs: ## Lint docs
 	docker run --rm -it --pull always -e DOCS_DIR='/docs' -v $(shell pwd)/doc:/docs oskarstark/doctor-rst:latest --short
 

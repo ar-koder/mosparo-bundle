@@ -1,6 +1,22 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
 
 namespace Mosparo\MosparoBundle\Tests\DependencyInjection;
 
@@ -10,6 +26,11 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Parser;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class MosparoExtensionTest extends TestCase
 {
     protected ?ContainerBuilder $configuration;
@@ -82,7 +103,7 @@ class MosparoExtensionTest extends TestCase
 
     protected function getSampleConfig()
     {
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 instance_url: https://example.com
 uuid: c75cde8e-681e-4618-b4c9-02f0636bdf25
 public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY

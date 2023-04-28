@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
+declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 namespace Mosparo\MosparoBundle\Tests\Serializer;
 
 use Mosparo\MosparoBundle\Serializer\FormNormalizer;
@@ -10,6 +28,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class FormNormalizerTest extends TestCase
 {
     use FormTrait;
@@ -52,7 +75,8 @@ class FormNormalizerTest extends TestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'));
+            ->add($this->getSubmitButton('submit'))
+        ;
 
         self::assertFalse($this->normalizer->supportsNormalization($form));
     }
@@ -62,7 +86,8 @@ class FormNormalizerTest extends TestCase
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
             ->add($this->getSubmitButton('submit'))
-            ->submit(['name' => 'John Example', 'submit' => '']);
+            ->submit(['name' => 'John Example', 'submit' => ''])
+        ;
 
         self::assertTrue($this->normalizer->supportsNormalization($form));
     }
@@ -79,7 +104,8 @@ class FormNormalizerTest extends TestCase
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
             ->add($this->getSubmitButton('submit'))
-            ->submit(['name' => 'John Example', 'submit' => '']);
+            ->submit(['name' => 'John Example', 'submit' => ''])
+        ;
 
         $this->assertEquals($expected, $this->normalizer->normalize($form));
     }
@@ -97,19 +123,26 @@ class FormNormalizerTest extends TestCase
 
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add('collection', CollectionType::class, [
-                'entry_type' => TextType::class,
-                'allow_add' => true,
-            ])
+            ->add(
+                'collection',
+                CollectionType::class,
+                [
+                    'entry_type' => TextType::class,
+                    'allow_add' => true,
+                ]
+            )
             ->add($this->getSubmitButton('submit'))
-            ->submit([
-                'name' => 'John Example',
-                'collection' => [
-                    0 => 'Entry 1',
-                    1 => 'Entry 2',
-                ],
-                'submit' => '',
-            ]);
+            ->submit(
+                [
+                    'name' => 'John Example',
+                    'collection' => [
+                        0 => 'Entry 1',
+                        1 => 'Entry 2',
+                    ],
+                    'submit' => '',
+                ]
+            )
+        ;
 
         $this->assertEquals($expected, $this->normalizer->normalize($form));
     }

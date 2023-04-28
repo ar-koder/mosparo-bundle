@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
+declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 namespace Mosparo\MosparoBundle\Tests\Traits;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -15,15 +33,20 @@ use Symfony\Component\Validator\Validation;
 trait FormTrait
 {
     protected FormFactoryInterface $factory;
+
     protected FormBuilder $builder;
+
     protected EventDispatcherInterface $dispatcher;
 
     private function getBuilder(string $name = 'name', string $dataClass = null, array $options = []): FormBuilder
     {
-        $options = array_replace([
-            'constraints' => [],
-            'invalid_message_parameters' => [],
-        ], $options);
+        $options = array_replace(
+            [
+                'constraints' => [],
+                'invalid_message_parameters' => [],
+            ],
+            $options
+        );
 
         return new FormBuilder($name, $dataClass, $this->dispatcher, $this->factory, $options);
     }
@@ -34,7 +57,8 @@ trait FormTrait
             ->setData($data)
             ->setCompound(true)
             ->setDataMapper(new DataMapper())
-            ->getForm();
+            ->getForm()
+        ;
     }
 
     private function getSubmitButton($name = 'name', array $options = []): \Symfony\Component\Form\SubmitButton
@@ -47,6 +71,7 @@ trait FormTrait
         $this->dispatcher = new EventDispatcher();
         $this->factory = (new FormFactoryBuilder())
             ->addExtension(new ValidatorExtension(Validation::createValidator()))
-            ->getFormFactory();
+            ->getFormFactory()
+        ;
     }
 }

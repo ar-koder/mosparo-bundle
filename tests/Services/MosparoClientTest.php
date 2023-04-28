@@ -1,6 +1,22 @@
 <?php
 
+/**
+ * @package   MosparoBundle
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ * @link      https://github.com/arnaud-ritti/mosparo-bundle
+ */
+
 declare(strict_types=1);
+
+/**
+ * @author    Arnaud RITTI <arnaud.ritti@gmail.com>
+ * @copyright 2023 Arnaud RITTI
+ * @license   MIT <https://github.com/arnaud-ritti/mosparo-bundle/blob/main/LICENSE.md>
+ *
+ * @see      https://github.com/arnaud-ritti/mosparo-bundle
+ */
 
 namespace Mosparo\MosparoBundle\Tests\Services;
 
@@ -16,6 +32,11 @@ use Mosparo\ApiClient\VerificationResult;
 use Mosparo\MosparoBundle\Services\MosparoClient;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class MosparoClientTest extends TestCase
 {
     public const INSTANCE_URL = 'http://test.local';
@@ -105,15 +126,24 @@ class MosparoClientTest extends TestCase
         $formSignature = $requestHelper->createFormDataHmacHash($preparedFormData);
 
         $validationSignature = $requestHelper->createHmacHash(self::VALIDATION_TOKEN);
-        $verificationSignature = $requestHelper->createHmacHash($validationSignature.$formSignature);
+        $verificationSignature = $requestHelper->createHmacHash(sprintf('%s%s', $validationSignature, $formSignature));
 
         // Set the response
-        $this->handler->append(new Response(200, ['Content-Type' => 'application/json'], json_encode([
-            'valid' => true,
-            'verificationSignature' => $verificationSignature,
-            'verifiedFields' => ['name' => VerificationResult::FIELD_VALID],
-            'issues' => [],
-        ], \JSON_THROW_ON_ERROR)));
+        $this->handler->append(
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                json_encode(
+                    [
+                        'valid' => true,
+                        'verificationSignature' => $verificationSignature,
+                        'verifiedFields' => ['name' => VerificationResult::FIELD_VALID],
+                        'issues' => [],
+                    ],
+                    \JSON_THROW_ON_ERROR
+                )
+            )
+        );
 
         // Start the test
         $apiClient = new MosparoClient(self::INSTANCE_URL, self::PUBLIC_KEY, self::PRIVATE_KEY, ['handler' => $this->handlerStack]);
@@ -152,10 +182,19 @@ class MosparoClientTest extends TestCase
         $validationSignature = $requestHelper->createHmacHash(self::VALIDATION_TOKEN);
 
         // Set the response
-        $this->handler->append(new Response(200, ['Content-Type' => 'application/json'], json_encode([
-            'error' => true,
-            'errorMessage' => 'Validation failed.',
-        ], \JSON_THROW_ON_ERROR)));
+        $this->handler->append(
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                json_encode(
+                    [
+                        'error' => true,
+                        'errorMessage' => 'Validation failed.',
+                    ],
+                    \JSON_THROW_ON_ERROR
+                )
+            )
+        );
 
         // Start the test
         $apiClient = new MosparoClient(self::INSTANCE_URL, self::PUBLIC_KEY, self::PRIVATE_KEY, ['handler' => $this->handlerStack]);
