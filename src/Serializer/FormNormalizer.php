@@ -50,7 +50,7 @@ class FormNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
         return $data;
     }
 
-    private function convertFormChildrenToArray(string $key, mixed $value, string $ancestor, array &$data): void
+    private function convertFormChildrenToArray(string|int $key, mixed $value, string $ancestor, array &$data): void
     {
         $key = sprintf('%s[%s]', $ancestor, $key);
         if (is_iterable($value)) {
