@@ -1,5 +1,6 @@
 {
     "name": "arnaud-ritti/mosparo-bundle",
+    "version": "0.0.1",
     "type": "symfony-bundle",
     "description": "A Symfony bundle for mosparo spam protection",
     "keywords": [

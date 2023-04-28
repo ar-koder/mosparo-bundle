@@ -10,6 +10,12 @@
     This bundle adds the required functionality to use mosparo in your Symfony form.
 </p>
 
+![GitHub](https://img.shields.io/github/license/arnaud-ritti/mosparo-bundle)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/arnaud-ritti/mosparo-bundle/main)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/arnaud-ritti/mosparo-bundle)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+
 -----
 
 ## Description
@@ -23,8 +29,8 @@ composer require arnaud-ritti/mosparo-bundle
 ```
 
 ## Usage
-1. Create a project in your mosparo installation
-2. Include the mosparo script in your form
+1.  Create a project in your mosparo installation
+2.  Include the mosparo script in your form
 ```html
 <div id="mosparo-box"></div>
 
@@ -36,11 +42,11 @@ composer require arnaud-ritti/mosparo-bundle
     };
 </script>
 ```
-3. Include the library in your project
+3.  Include the library in your project
 ```text
 composer require mosparo/php-api-client
 ```
-4. After the form was submitted, verify the data before processing it
+4.  After the form was submitted, verify the data before processing it
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
@@ -94,9 +100,9 @@ $result = $client->verifySubmission($formData, $mosparoSubmitToken, $mosparoVali
 ### VerificationResult
 
 #### Constants
-- FIELD_NOT_VERIFIED: 'not-verified'
-- FIELD_VALID: 'valid'
-- FIELD_INVALID: 'invalid'
+-   FIELD_NOT_VERIFIED: 'not-verified'
+-   FIELD_VALID: 'valid'
+-   FIELD_INVALID: 'invalid'
 
 #### isSubmittable(): boolean
 Returns true, if the form is submittable. This means that the verification was successful and the
