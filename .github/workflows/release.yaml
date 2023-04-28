@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows:
+      - "Linter: Code Syntax"
+      - "Linter: PHPStan"
+      - "Tests - Stable"
+      - "Tests - Lowest supported dependencies"
+      - "Tests - Maintained Symfony versions"
+      - "Tests - Upcoming PHP version"
+      - "Tests - Upcoming Symfony version"
+    types:
+      - "completed"
+    branches:
+      - "main"
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: php
+          package-name: mosparo-bundle
