@@ -12,7 +12,7 @@
 </p>
 
 ![GitHub](https://img.shields.io/github/license/arnaud-ritti/mosparo-bundle)
-![GitHub branch checks state](https://img.shields.io/github/checks-status/arnaud-ritti/mosparo-bundle/main)
+[![GitHub checks](https://github.com/arnaud-ritti/mosparo-bundle/actions/workflows/release.yaml/badge.svg)](https://github.com/arnaud-ritti/mosparo-bundle/actions/workflows/release.yaml)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/arnaud-ritti/mosparo-bundle)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_coverage)
