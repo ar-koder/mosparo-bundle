@@ -9,10 +9,10 @@ working on Open-Source projects.
 
 Before your first contribution, make sure you'll meet these requirements:
 
-*   You have a user account on [GitHub](https://github.com/).
-*   You have installed in your computer a working environment to develop PHP
+* You have a user account on [GitHub](https://github.com/).
+* You have installed in your computer a working environment to develop PHP
     applications.
-*   You have a basic level of English (code, docs and discussions are in English).
+* You have a basic level of English (code, docs and discussions are in English).
 
 All submitted contributions (both code and documentation) adhere implicitly to
 the [Open-Source MIT License][mit-license].
@@ -48,8 +48,8 @@ Read the [Symfony contribution guide][sf-contribution] for more details and repl
 
 ## Further information
 
-*   [General GitHub documentation][gh-help]
-*   [GitHub pull request documentation][gh-pr]
+* [General GitHub documentation][gh-help]
+* [GitHub pull request documentation][gh-pr]
 
 [mit-license]: https://opensource.org/licenses/MIT
 

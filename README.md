@@ -1,4 +1,5 @@
-&nbsp;
+ 
+
 <p align="center">
     <img src="https://github.com/mosparo/mosparo/blob/master/assets/images/mosparo-logo.svg?raw=true" alt="mosparo logo contains a bird with the name Mo and the mosparo text"/>
 </p>
@@ -13,113 +14,139 @@
 ![GitHub](https://img.shields.io/github/license/arnaud-ritti/mosparo-bundle)
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/arnaud-ritti/mosparo-bundle/main)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/arnaud-ritti/mosparo-bundle)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/0f5b1debea2c4a169e44ee5e09397927)](https://app.codacy.com/gh/arnaud-ritti/mosparo-bundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_coverage)
 
------
+***
 
 ## Description
+
 With this PHP library you can connect to a mosparo installation and verify the submitted data.
 
+## Requirements
+
+To use the plugin, you must meet the following requirements:
+
+* A mosparo project
+* Symfony 5.4 or greater
+* PHP 8.0 or greater
+
 ## Installation
+
 Install this bundle by using composer:
 
 ```text
 composer require arnaud-ritti/mosparo-bundle
 ```
 
-## Usage
-1.  Create a project in your mosparo installation
-2.  Include the mosparo script in your form
-```html
-<div id="mosparo-box"></div>
+## Configuration
 
-<script src="https://[URL]/build/mosparo-frontend.js" defer></script>
-<script>
-    var m;
-    window.onload = function(){
-        m = new mosparo('mosparo-box', 'https://[URL]', '[UUID]', '[PUBLIC_KEY]', {loadCssResource: true});
-    };
-</script>
+### 1. Register the bundle
+
+Register bundle into `config/bundles.php`:
+
+```php
+return [
+    //...
+    Mosparo\MosparoBundle\MosparoBundle::class => ['all' => true],
+];
 ```
-3.  Include the library in your project
+
+### 2. Add configuration files
+
+Setup bundle's config into `config/packages/mosparo.yaml`:
+
+```yaml
+
+mosparo:
+  instance_url: '%env(MOSPARO_INSTANCE_URL)%'
+  uuid: '%env(MOSPARO_UUID)%'
+  public_key: '%env(MOSPARO_PUBLIC_KEY)%'
+  private_key: '%env(MOSPARO_PRIVATE_KEY)%'
+```
+
+Add your variables to your .env file:
+
 ```text
-composer require mosparo/php-api-client
+###> mosparo/mosparo-bundle ###
+MOSPARO_INSTANCE_URL=https://example.com
+MOSPARO_UUID=<your-project-uuid>
+MOSPARO_PUBLIC_KEY=<your-project-public-key>
+MOSPARO_PRIVATE_KEY=<your-project-private-key>
+###< mosparo/mosparo-bundle ###
 ```
-4.  After the form was submitted, verify the data before processing it
+
+## Usage
+
+### How to integrate re-captcha in Symfony form:
+
 ```php
 <?php
-require_once(__DIR__ . '/vendor/autoload.php');
 
-$client = new Mosparo\ApiClient\Client($url, $publicKey, $privateKey, ['verify' => false]);
+use Mosparo\MosparoBundle\Form\Type\MosparoType;
 
-$mosparoSubmitToken = $_POST['_mosparo_submitToken'];
-$mosparoValidationToken = $_POST['_mosparo_validationToken'];
-
-$result = $client->verifySubmission($_POST, $mosparoSubmitToken, $mosparoValidationToken);
-
-if ($result->isSubmittable()) {
-    // Send the email or process the data
-} else {
-    // Show error message
+class TaskType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('captcha', MosparoType::class, [
+            'allowBrowserValidation' => false,
+            'cssResourceUrl' => '',
+            'designMode' => false,
+            'inputFieldSelector' => '[name]:not(.mosparo__ignored-field)',
+            'loadCssResource' => true,
+            'requestSubmitTokenOnInit' => true,
+        ]);
+    }
 }
 ```
 
-## API Documentation
+### Additional options
 
-### Client
+| Parameter                  | Type    | Default value                         | Description                                                                                                                                                                                                                                                                        |
+|----------------------------|---------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `allowBrowserValidation`   | Boolean | false                                 | Specifies whether browser validation should be active.                                                                                                                                                                                                                             |
+| `cssResourceUrl`           | String  | *empty*                               | Defines the address at which the browser can load the CSS resources. You can use it if the correct resource address is cached.                                                                                                                                                     |
+| `designMode`               | Boolean | false                                 | Used to display the mosparo box in the different states in the mosparo backend. The mosparo box is not functional if this option is set to `true`.                                                                                                                                 |
+| `inputFieldSelector`       | String  | `[name]:not(.mosparo__ignored-field)` | Defines the selector with which the fields are searched.                                                                                                                                                                                                                           |
+| `loadCssResource`          | Boolean | true                                  | Determines whether the script should also load the CSS resources during initialization.                                                                                                                                                                                            |
+| `requestSubmitTokenOnInit` | Boolean | `true`                                | Specifies whether a submit token should be automatically requested during initialization. If, for example, the form is reset directly after initialization (with `reset()`), there is no need for a submit token during initialization, as a new code is requested with the reset. |
 
-#### Client initialization
-Create a new client object to use the API client.
-```php
-/**
- * @param string $url URL of the mosparo installation
- * @param string $publicKey Public key of the mosparo project
- * @param string $privateKey Private key of the mosparo project 
- * @param array $args Arguments for the Guzzle client
- */
-$client = new Mosparo\ApiClient\Client($url, $publicKey, $privateKey, $args);
-```
+## Ignored fields
 
-#### Verify form data
-To verify the form data, call `verifySubmission` with the form data in an array and the submit and validation tokens, which mosparo generated on the form initialization and the form data validation. The method will return a `VerificationResult` object.
-```php
-/**
- * @param array $formData Array with the form values. All not-processed fields by mosparo (hidden, checkbox, 
- *                        radio and so on) have to be removed from this array
- * @param string $mosparoSubmitToken Submit token which mosparo returned on the form initialization
- * @param string $mosparoValidationToken Validation token which mosparo returned after the form was validated
- * @return Mosparo\ApiClient\VerificationResult Returns a VerificationResult object with the response from mosparo
- * 
- * @throws \Mosparo\ApiClient\Exception Submit or validation token not available.
- * @throws \Mosparo\ApiClient\Exception An error occurred while sending the request to mosparo.
- */
-$result = $client->verifySubmission($formData, $mosparoSubmitToken, $mosparoValidationToken);
-```
+### Automatically ignored fields
 
-### VerificationResult
+mosparo automatically ignores the following fields:
 
-#### Constants
--   FIELD_NOT_VERIFIED: 'not-verified'
--   FIELD_VALID: 'valid'
--   FIELD_INVALID: 'invalid'
+* All fields which **do not** have a name (attribute `name`)
+* HTML field type
+  * *password*
+  * *file*
+  * *hidden*
+  * *checkbox*
+  * *radio*
+  * *submit*
+  * *reset*
+* HTML button type
+  * *submit*
+  * *button*
+* Fields containing `_mosparo_` in the name
 
-#### isSubmittable(): boolean
-Returns true, if the form is submittable. This means that the verification was successful and the
-form data are valid.
+### Manually ignored fields
 
-#### isValid(): boolean
-Returns true, if mosparo determined the form as valid. The difference to `isSubmittable()` is, that this
-is the original result from mosparo while `isSubmittable()` also checks if the verification was done correctly.
+#### CSS class
 
-#### getVerifiedFields(): array (see Constants)
-Returns an array with all verified field keys.
+If you give a form field the CSS class `mosparo__ignored-field`, the field will not be processed by mosparo.
 
-#### getVerifiedField($key): string (see Constants)
-Returns the verification status of one field.
+#### JavaScript initialisation
 
-#### hasIssues(): boolean
-Returns true, if there were verification issues.
+When initializing the JavaScript functionality, you can define the selector with which the fields are searched (see [Parameters of the mosparo field](#additional-options)).
 
-#### getIssues(): array
-Returns an array with all verification issues.
+## License
+
+mosparo is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+Please see the [LICENSE](LICENSE) file for the full license.
+
+## Contributing
+
+See [CONTRIBUTING](.github/CONTRIBUTING)
