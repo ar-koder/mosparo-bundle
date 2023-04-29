@@ -23,11 +23,9 @@ linter-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
 fix-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
 	vendor/bin/phpcbf ./src ./tests
 	vendor/bin/php-cs-fixer fix --diff --dry-run -vvv --using-cache=no
-linter-docs: ## Lint docs
-	docker run --rm -it --pull always -e DOCS_DIR='/docs' -v $(shell pwd)/doc:/docs oskarstark/doctor-rst:latest --short
 
 ## —— Development —————————————————————————————
 build: ## Initially build the package before development
 	composer update
 
-checks-before-pr: linter-code-syntax linter-docs tests ## Runs tests and linters which are also run on PRs
+checks-before-pr: linter-code-syntax tests ## Runs tests and linters which are also run on PRs
