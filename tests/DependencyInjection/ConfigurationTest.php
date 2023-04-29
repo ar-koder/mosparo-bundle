@@ -53,6 +53,7 @@ class ConfigurationTest extends TestCase
                     'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
                     'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
                     'guzzle_options' => [],
+                    'enabled' => true,
                 ],
             ],
             [
@@ -75,6 +76,7 @@ class ConfigurationTest extends TestCase
                     'guzzle_options' => [
                         'verify' => false,
                     ],
+                    'enabled' => true,
                 ],
             ],
         ];

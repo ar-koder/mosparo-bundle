@@ -25,6 +25,7 @@ class MosparoType extends AbstractType
         private string $uuid,
         private string $publicKey,
         private string $privateKey,
+        private bool $enabled = true,
     ) {
     }
 
@@ -59,6 +60,7 @@ class MosparoType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['mosparo'] = [
+            'enabled' => $this->enabled,
             'instance_url' => $this->instanceUrl,
             'uuid' => $this->uuid,
             'public_key' => $this->publicKey,

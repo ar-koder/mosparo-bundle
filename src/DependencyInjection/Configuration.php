@@ -55,6 +55,8 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->end()
             ->end()
+            ->booleanNode('enabled')->defaultTrue()->end()
+            ->end()
         ;
 
         return $treeBuilder;

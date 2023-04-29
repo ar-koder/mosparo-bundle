@@ -52,7 +52,8 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         array $verifiedFields = [],
         array $issues = [],
         ?string $submitToken = self::SUBMIT_TOKEN,
-        ?string $validationToken = self::VALIDATION_TOKEN
+        ?string $validationToken = self::VALIDATION_TOKEN,
+        ?bool $enabled = true
     ): IsValidMosparoValidator {
         $requestStack = $this->createMock(RequestStack::class);
         $request = $this->createMock(Request::class);
@@ -82,7 +83,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             )
         );
 
-        return new IsValidMosparoValidator($client, $requestStack);
+        return new IsValidMosparoValidator($client, $requestStack, $enabled);
     }
 
     protected function setValidator(
@@ -91,10 +92,11 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         array $verifiedFields = [],
         array $issues = [],
         ?string $submitToken = self::SUBMIT_TOKEN,
-        ?string $validationToken = self::VALIDATION_TOKEN
+        ?string $validationToken = self::VALIDATION_TOKEN,
+        ?bool $enabled = true
     ): void {
         $this->context = $this->createContext();
-        $this->validator = $this->makeValidator($submittable, $valid, $verifiedFields, $issues, $submitToken, $validationToken);
+        $this->validator = $this->makeValidator($submittable, $valid, $verifiedFields, $issues, $submitToken, $validationToken, $enabled);
         $this->validator->initialize($this->context);
     }
 
@@ -118,6 +120,31 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             [
                 'name[name]' => VerificationResult::FIELD_VALID,
             ]
+        );
+
+        $this->validator->validate(null, new IsValidMosparo());
+        $this->assertNoViolation();
+    }
+
+    public function testValidIfNotEnabled(): void
+    {
+        $form = $this->getCompoundForm([])
+            ->add('name', TextType::class)
+            ->add($this->getSubmitButton('submit'))
+        ;
+
+        $form->submit(['name' => 'John Example', 'submit' => '']);
+        $this->setRoot($form);
+        $this->setValidator(
+            false,
+            false,
+            [
+                'name[name]' => VerificationResult::FIELD_INVALID,
+            ],
+            [],
+            self::SUBMIT_TOKEN,
+            self::VALIDATION_TOKEN,
+            false
         );
 
         $this->validator->validate(null, new IsValidMosparo());

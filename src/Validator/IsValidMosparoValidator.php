@@ -26,6 +26,7 @@ class IsValidMosparoValidator extends ConstraintValidator
     public function __construct(
         private MosparoClient $client,
         private RequestStack $requestStack,
+        private bool $enabled = true,
     ) {
     }
 
@@ -33,6 +34,10 @@ class IsValidMosparoValidator extends ConstraintValidator
     {
         if (!$constraint instanceof IsValidMosparo) {
             throw new UnexpectedTypeException($constraint, IsValidMosparo::class);
+        }
+
+        if (!$this->enabled) {
+            return;
         }
 
         try {

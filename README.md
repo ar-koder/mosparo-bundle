@@ -57,7 +57,6 @@ return [
 Setup bundle's config into `config/packages/mosparo.yaml`:
 
 ```yaml
-
 mosparo:
   instance_url: '%env(MOSPARO_INSTANCE_URL)%'
   uuid: '%env(MOSPARO_UUID)%'
@@ -141,6 +140,21 @@ If you give a form field the CSS class `mosparo__ignored-field`, the field will 
 #### JavaScript initialisation
 
 When initializing the JavaScript functionality, you can define the selector with which the fields are searched (see [Parameters of the mosparo field](#additional-options)).
+
+### How to deal with functional and e2e testing:
+
+Mosparo won't allow you to test your app efficiently unless you disable it for the environment you are testing against.
+
+```yaml
+# config/packages/mosparo.yaml
+mosparo:
+    enabled: '%env(bool:MOSPARO_ENABLED)%'
+```
+
+```bash
+#.env.test or an environment variable
+MOSPARO_ENABLED=0
+```
 
 ## License
 

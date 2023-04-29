@@ -14,6 +14,7 @@ services:
             - '%mosparo.uuid%'
             - '%mosparo.public_key%'
             - '%mosparo.private_key%'
+            - '%mosparo.enabled%'
         tags:
             - { name: form.type }
 
@@ -21,5 +22,6 @@ services:
         arguments:
             - '@mosparo.client'
             - '@request_stack'
+            - '%mosparo.enabled%'
         tags:
             - { name: validator.constraint_validator, alias: is_valid_mosparo_validator }

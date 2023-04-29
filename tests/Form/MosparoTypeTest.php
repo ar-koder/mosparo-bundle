@@ -46,6 +46,6 @@ class MosparoTypeTest extends TypeTestCase
         self::assertSame(self::PUBLIC_KEY, $view->vars['mosparo']['public_key']);
         self::assertSame(self::PRIVATE_KEY, $view->vars['mosparo']['private_key']);
         self::assertArrayHasKey('options', $view->vars['mosparo']);
-        self::assertIsArray($view->vars['mosparo']['options']);
+        self::assertTrue($view->vars['mosparo']['enabled']);
     }
 }

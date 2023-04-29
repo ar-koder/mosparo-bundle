@@ -19,7 +19,7 @@ linter-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
 	vendor/bin/simple-phpunit install
 	vendor/bin/phpstan analyse
 	vendor/bin/phpcs ./src ./tests
-	vendor/bin/php-cs-fixer fix --diff -vvv --using-cache=no
+	vendor/bin/php-cs-fixer fix --diff --dry-run -vvv --using-cache=no
 fix-code-syntax: ## Lint PHP code (in dry-run mode, does not edit files)
 	vendor/bin/phpcbf ./src ./tests
 	vendor/bin/php-cs-fixer fix --diff --dry-run -vvv --using-cache=no

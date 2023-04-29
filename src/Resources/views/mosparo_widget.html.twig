@@ -1,4 +1,5 @@
 {% block mosparo_widget %}
+    {% if mosparo.enabled -%}
     <div id="{{ id }}"></div>
     <script src="{{ mosparo.instance_url }}/build/mosparo-frontend.js" defer></script>
     <script>
@@ -7,5 +8,6 @@
         mosparoLayer.push(new mosparo('{{ id }}', '{{ mosparo.instance_url }}', '{{ mosparo.uuid }}', '{{ mosparo.public_key }}', {{ mosparo.options|json_encode|raw }}));
       });
     </script>
+    {%- endif %}
 {% endblock %}
 
