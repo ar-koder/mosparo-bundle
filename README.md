@@ -77,7 +77,7 @@ MOSPARO_PRIVATE_KEY=<your-project-private-key>
 
 ## Usage
 
-### How to integrate re-captcha in Symfony form:
+### How to integrate mosparo in Symfony form:
 
 ```php
 <?php
@@ -88,7 +88,7 @@ class TaskType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('captcha', MosparoType::class, [
+        $builder->add('mosparo', MosparoType::class, [
             'allowBrowserValidation' => false,
             'cssResourceUrl' => '',
             'designMode' => false,
