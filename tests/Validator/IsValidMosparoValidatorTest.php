@@ -14,6 +14,7 @@ namespace Mosparo\MosparoBundle\Tests\Validator;
 
 use Mosparo\ApiClient\VerificationResult;
 use Mosparo\MosparoBundle\Form\Type\MosparoType;
+use Mosparo\MosparoBundle\Serializer\FormNormalizer;
 use Mosparo\MosparoBundle\Services\MosparoClient;
 use Mosparo\MosparoBundle\Tests\Traits\FormTrait;
 use Mosparo\MosparoBundle\Validator\IsValidMosparo;
@@ -92,8 +93,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             )
         );
 
+        $normalizer = new FormNormalizer($this->dispatcher);
+
         $validator = $this->getMockBuilder(IsValidMosparoValidator::class)
-            ->setConstructorArgs([$requestStack, $this->configuration->getParameterBag(), $enabled])
+            ->setConstructorArgs([$requestStack, $this->configuration->getParameterBag(), $normalizer, $enabled])
             ->onlyMethods(['getClient'])
             ->getMock()
         ;
@@ -139,8 +142,8 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             )
         ;
         $requestStack->method('getMainRequest')->willReturn($request);
-
-        $validator = new IsValidMosparoValidator($requestStack, $this->configuration->getParameterBag());
+        $normalizer = new FormNormalizer($this->dispatcher);
+        $validator = new IsValidMosparoValidator($requestStack, $this->configuration->getParameterBag(), $normalizer);
         self::assertInstanceOf(MosparoClient::class, $validator->getClient());
     }
 

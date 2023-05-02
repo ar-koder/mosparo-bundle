@@ -75,7 +75,7 @@ MOSPARO_PRIVATE_KEY=<your-project-private-key>
 ###< mosparo/mosparo-bundle ###
 ```
 
-### Handle multiples configurations:
+### Handle multiples configurations
 
 Into your configuration file. ex: `config/packages/mosparo.yaml`:
 
@@ -180,6 +180,45 @@ If you give a form field the CSS class `mosparo__ignored-field`, the field will 
 #### JavaScript initialisation
 
 When initializing the JavaScript functionality, you can define the selector with which the fields are searched (see [Parameters of the mosparo field](#additional-options)).
+
+### Override allowed and verifiable field types
+
+You can also register event listeners (or subscribers) to add or remove field types.
+
+We use here a listener for example.
+
+```php
+// src/EventListener/FilterFieldTypesListener.php
+namespace App\EventListener;
+
+use Mosparo\MosparoBundle\Event\FilterFieldTypesEvent;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+
+#[AsEventListener]
+class FilterFieldTypesListener
+{
+    public function __invoke(FilterFieldTypesEvent $event): FilterFieldTypesEvent
+    {
+        // Remove PasswordType from the ignored list
+        $event->setIgnoredFieldTypes(array_diff(
+          $event->getIgnoredFieldTypes(), 
+          [
+            PasswordType::class
+          ]
+        ));
+        
+        // Add PasswordType to the verifiable list
+        $event->setVerifiableFieldTypes(array_merge(
+          $event->getVerifiableFieldTypes(), 
+          [
+            PasswordType::class
+          ]
+        ));
+
+        return $event;
+    }
+}
+```
 
 ### How to deal with functional and e2e testing:
 

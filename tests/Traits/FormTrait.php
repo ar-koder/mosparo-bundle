@@ -32,9 +32,7 @@ trait FormTrait
     protected ?ContainerBuilder $configuration;
 
     protected FormFactoryInterface $factory;
-
     protected FormBuilder $builder;
-
     protected EventDispatcherInterface $dispatcher;
 
     private function getBuilder(string $name = 'name', string $dataClass = null, array $options = []): FormBuilder

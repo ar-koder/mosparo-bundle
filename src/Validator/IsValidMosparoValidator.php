@@ -27,6 +27,7 @@ class IsValidMosparoValidator extends ConstraintValidator
     public function __construct(
         private RequestStack $requestStack,
         private ParameterBagInterface $parameters,
+        private FormNormalizer $normalizer,
         private bool $enabled = true,
     ) {
     }
@@ -72,7 +73,7 @@ class IsValidMosparoValidator extends ConstraintValidator
             $project = $field->getConfig()
                 ->getOption('project', $this->parameters->get('mosparo.default_project'))
             ;
-            $formData = (new FormNormalizer())->normalize($form);
+            $formData = $this->normalizer->normalize($form);
             $result = $this
                 ->getClient($project)
                 ->verifySubmission($formData, $mosparoSubmitToken, $mosparoValidationToken)

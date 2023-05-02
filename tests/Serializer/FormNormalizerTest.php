@@ -12,11 +12,15 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\Tests\Serializer;
 
+use Mosparo\MosparoBundle\Event\FilterFieldTypesEvent;
 use Mosparo\MosparoBundle\Form\Type\MosparoType;
 use Mosparo\MosparoBundle\Serializer\FormNormalizer;
 use Mosparo\MosparoBundle\Tests\Traits\FormTrait;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
@@ -30,10 +34,13 @@ class FormNormalizerTest extends TestCase
 
     private FormNormalizer $normalizer;
 
+    protected EventDispatcherInterface $dispatcher;
+
     protected function setUp(): void
     {
         $this->setUpForm();
-        $this->normalizer = new FormNormalizer();
+        $this->dispatcher = $this->createMock(EventDispatcher::class);
+        $this->normalizer = new FormNormalizer($this->dispatcher);
     }
 
     public function testSupportedTypes(): void
@@ -88,7 +95,15 @@ class FormNormalizerTest extends TestCase
     public function testNormalize(): void
     {
         $expected = [
-            'name[name]' => 'John Example',
+            'formData' => [
+                'name[name]' => 'John Example',
+            ],
+            'requiredFields' => [
+                'name[name]',
+            ],
+            'verifiableFields' => [
+                'name[name]',
+            ],
         ];
 
         $form = $this->getCompoundForm([])
@@ -100,15 +115,80 @@ class FormNormalizerTest extends TestCase
         $this->assertEquals($expected, $this->normalizer->normalize($form));
     }
 
+    public function testNormalizeWithTypeOverride(): void
+    {
+        $expected = [
+            'formData' => [
+                'name[name]' => 'John Example',
+                'name[password]' => 'password',
+                'name[optional]' => null,
+            ],
+            'requiredFields' => [
+                'name[name]',
+                'name[password]',
+            ],
+            'verifiableFields' => [
+                'name[name]',
+                'name[password]',
+                'name[optional]',
+            ],
+        ];
+
+        $form = $this->getCompoundForm([])
+            ->add('name', TextType::class)
+            ->add('password', PasswordType::class)
+            ->add('optional', TextType::class, [
+                'required' => false,
+            ])
+            ->add('mosparo', MosparoType::class)
+            ->submit([
+                'name' => 'John Example',
+                'password' => 'password',
+                'submit' => '',
+            ])
+        ;
+
+        $this->dispatcher
+            ->expects($this->once())
+            ->method('hasListeners')
+            ->willReturn(true)
+        ;
+
+        $this->dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->willReturnCallback(function (FilterFieldTypesEvent $event): FilterFieldTypesEvent {
+                $event->setIgnoredFieldTypes(array_diff($event->getIgnoredFieldTypes(), [PasswordType::class]));
+                $event->setVerifiableFieldTypes(array_merge($event->getVerifiableFieldTypes(), [PasswordType::class]));
+
+                return $event;
+            })
+        ;
+
+        $this->assertEquals($expected, $this->normalizer->normalize($form));
+    }
+
     /**
      * @throws ExceptionInterface
      */
     public function testNormalizeWithChildren(): void
     {
         $expected = [
-            'name[name]' => 'John Example',
-            'name[collection][0]' => 'Entry 1',
-            'name[collection][1]' => 'Entry 2',
+            'formData' => [
+                'name[name]' => 'John Example',
+                'name[collection][0]' => 'Entry 1',
+                'name[collection][1]' => 'Entry 2',
+            ],
+            'requiredFields' => [
+                'name[name]',
+                'name[collection][0]',
+                'name[collection][1]',
+            ],
+            'verifiableFields' => [
+                'name[name]',
+                'name[collection][0]',
+                'name[collection][1]',
+            ],
         ];
 
         $form = $this->getCompoundForm([])

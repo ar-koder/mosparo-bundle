@@ -16,10 +16,21 @@ services:
         tags:
             - { name: form.type }
 
+    mosparo.form.normalizer:
+        class: Mosparo\MosparoBundle\Serializer\FormNormalizer
+        arguments:
+            - '@event_dispatcher'
+        tags:
+            - { name: serializer.normalizer }
+
+    Mosparo\MosparoBundle\Serializer\FormNormalizer:
+        alias: mosparo.form.normalizer
+
     Mosparo\MosparoBundle\Validator\IsValidMosparoValidator:
         arguments:
             - '@request_stack'
             - '@parameter_bag'
+            - '@mosparo.form.normalizer'
             - '%mosparo.enabled%'
         tags:
             - { name: validator.constraint_validator, alias: is_valid_mosparo_validator }

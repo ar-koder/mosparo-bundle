@@ -29,6 +29,7 @@
         "symfony/validator": "^5.4 || ^6.0",
         "symfony/twig-bundle": "^5.4 || ^6.0",
         "symfony/framework-bundle": "^5.4 || ^6.0",
+        "symfony/event-dispatcher": "^5.4 || ^6.0",
         "mosparo/php-api-client": "^1.0.2",
         "ramsey/uuid": "^4.0"
     },
