@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Mosparo\MosparoBundle\Form\Type;
 
 use Mosparo\MosparoBundle\Validator\IsValidMosparo;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -21,11 +22,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MosparoType extends AbstractType
 {
     public function __construct(
-        private string $instanceUrl,
-        private string $uuid,
-        private string $publicKey,
-        private string $privateKey,
-        private bool $enabled = true,
+        private string $config,
+        private ParameterBagInterface $parameters,
+        private bool $enabled = true
     ) {
     }
 
@@ -40,6 +39,7 @@ class MosparoType extends AbstractType
                 'compound' => false,
                 'invalid_message' => 'The mosparo field is invalid.',
                 'constraints' => [new IsValidMosparo()],
+                'project' => $this->config,
                 'allowBrowserValidation' => false,
                 'cssResourceUrl' => '',
                 'designMode' => false,
@@ -49,6 +49,7 @@ class MosparoType extends AbstractType
             ]
         );
 
+        $resolver->setAllowedTypes('project', 'string');
         $resolver->setAllowedTypes('allowBrowserValidation', 'bool');
         $resolver->setAllowedTypes('designMode', 'bool');
         $resolver->setAllowedTypes('loadCssResource', 'bool');
@@ -61,10 +62,10 @@ class MosparoType extends AbstractType
     {
         $view->vars['mosparo'] = [
             'enabled' => $this->enabled,
-            'instance_url' => $this->instanceUrl,
-            'uuid' => $this->uuid,
-            'public_key' => $this->publicKey,
-            'private_key' => $this->privateKey,
+            'instance_url' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'instance_url')),
+            'uuid' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'uuid')),
+            'public_key' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'public_key')),
+            'private_key' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'private_key')),
             'options' => [
                 'allowBrowserValidation' => $options['allowBrowserValidation'],
                 'cssResourceUrl' => $options['cssResourceUrl'],

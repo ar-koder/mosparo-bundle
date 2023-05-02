@@ -75,6 +75,44 @@ MOSPARO_PRIVATE_KEY=<your-project-private-key>
 ###< mosparo/mosparo-bundle ###
 ```
 
+### Handle multiples configurations:
+
+Into your configuration file. ex: `config/packages/mosparo.yaml`:
+
+```yaml
+mosparo:
+  default_project: '%env(MOSPARO_DEFAULT)%'
+  projects:
+    forms:
+      instance_url: '%env(MOSPARO_FORMS_INSTANCE_URL)%'
+      uuid: '%env(MOSPARO_FORMS_UUID)%'
+      public_key: '%env(MOSPARO_FORMS_PUBLIC_KEY)%'
+      private_key: '%env(MOSPARO_FORMS_PRIVATE_KEY)%'
+    login:
+      instance_url: '%env(MOSPARO_LOGIN_INSTANCE_URL)%'
+      uuid: '%env(MOSPARO_LOGIN_UUID)%'
+      public_key: '%env(MOSPARO_LOGIN_PUBLIC_KEY)%'
+      private_key: '%env(MOSPARO_LOGIN_PRIVATE_KEY)%'
+```
+
+Inside your `.env` files
+
+```text
+###> mosparo/mosparo-bundle ###
+MOSPARO_DEFAULT=<your-default-config>
+
+MOSPARO_FORMS_INSTANCE_URL=<your-forms-project-instance>
+MOSPARO_FORMS_UUID=<your-forms-project-uuid>
+MOSPARO_FORMS_PUBLIC_KEY=<your-forms-project-public-key>
+MOSPARO_FORMS_PRIVATE_KEY=<your-forms-project-private-key>
+
+MOSPARO_LOGIN_INSTANCE_URL=<your-login-project-instance>
+MOSPARO_LOGIN_UUID=<your-login-project-uuid>
+MOSPARO_LOGIN_PUBLIC_KEY=<your-login-project-public-key>
+MOSPARO_LOGIN_PRIVATE_KEY=<your-login-project-private-key>
+###< mosparo/mosparo-bundle ###
+```
+
 ## Usage
 
 ### How to integrate mosparo in Symfony form:
@@ -89,6 +127,7 @@ class TaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('mosparo', MosparoType::class, [
+            'project' => 'default',
             'allowBrowserValidation' => false,
             'cssResourceUrl' => '',
             'designMode' => false,
@@ -102,13 +141,14 @@ class TaskType extends AbstractType
 
 ### Additional options
 
-| Parameter                  | Type    | Default value                         | Description                                                                                                                                                                                                                                                                        |
-|----------------------------|---------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `allowBrowserValidation`   | Boolean | false                                 | Specifies whether browser validation should be active.                                                                                                                                                                                                                             |
-| `cssResourceUrl`           | String  | *empty*                               | Defines the address at which the browser can load the CSS resources. You can use it if the correct resource address is cached.                                                                                                                                                     |
-| `designMode`               | Boolean | false                                 | Used to display the mosparo box in the different states in the mosparo backend. The mosparo box is not functional if this option is set to `true`.                                                                                                                                 |
-| `inputFieldSelector`       | String  | `[name]:not(.mosparo__ignored-field)` | Defines the selector with which the fields are searched.                                                                                                                                                                                                                           |
-| `loadCssResource`          | Boolean | true                                  | Determines whether the script should also load the CSS resources during initialization.                                                                                                                                                                                            |
+| Parameter                  | Type    | Default value                         | Description                                                                                                                                                                                                                                                                     |
+|----------------------------|---------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `project`                  | String  | `default`                             | Defines the mosparo project to use for validation. See [Handle multiples configurations](#handle-multiples-configurations)                                                                                                                                                                                                                         |
+| `allowBrowserValidation`   | Boolean | false                                 | Specifies whether browser validation should be active.                                                                                                                                                                                                                          |
+| `cssResourceUrl`           | String  | *empty*                               | Defines the address at which the browser can load the CSS resources. You can use it if the correct resource address is cached.                                                                                                                                                  |
+| `designMode`               | Boolean | false                                 | Used to display the mosparo box in the different states in the mosparo backend. The mosparo box is not functional if this option is set to `true`.                                                                                                                              |
+| `inputFieldSelector`       | String  | `[name]:not(.mosparo__ignored-field)` | Defines the selector with which the fields are searched.                                                                                                                                                                                                                        |
+| `loadCssResource`          | Boolean | true                                  | Determines whether the script should also load the CSS resources during initialization.                                                                                                                                                                                         |
 | `requestSubmitTokenOnInit` | Boolean | `true`                                | Specifies whether a submit token should be automatically requested during initialization. If, for example, the form is reset directly after initialization (with `reset()`), there is no need for a submit token during initialization, as a new code is requested with the reset. |
 
 ## Ignored fields
@@ -148,12 +188,48 @@ Mosparo won't allow you to test your app efficiently unless you disable it for t
 ```yaml
 # config/packages/mosparo.yaml
 mosparo:
-    enabled: '%env(bool:MOSPARO_ENABLED)%'
+  enabled: '%env(bool:MOSPARO_ENABLED)%'
 ```
 
 ```bash
 #.env.test or an environment variable
 MOSPARO_ENABLED=0
+```
+
+### How to disable SSL verification:
+
+In order to support invalid SSL certificats you will need to disable the SSL check.
+
+```yaml
+# config/packages/mosparo.yaml
+mosparo:
+  ...
+  verify_ssl: '%env(bool:MOSPARO_VERIFY_SSL)%'
+```
+
+```bash
+#.env or an environment variable
+MOSPARO_VERIFY_SSL=0
+```
+
+#### For multiples configurations:
+
+```yaml
+# config/packages/mosparo.yaml
+mosparo:
+  projects:
+    forms:
+      ...
+      verify_ssl: '%env(bool:MOSPARO_FORMS_VERIFY_SSL)%'
+    login:
+      ...
+      verify_ssl: '%env(bool:MOSPARO_LOGIN_VERIFY_SSL)%'
+```
+
+```bash
+#.env or an environment variable
+MOSPARO_FORMS_VERIFY_SSL=0
+MOSPARO_LOGIN_VERIFY_SSL=0
 ```
 
 ## License

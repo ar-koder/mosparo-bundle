@@ -66,14 +66,35 @@ class MosparoExtensionTest extends TestCase
         $loader->load([$config], new ContainerBuilder());
     }
 
-    public function testParameters(): void
+    public function testParametersWithDefaultConfig(): void
     {
         $this->createSampleConfiguration();
         $config = $this->getSampleConfig();
-        $this->assertParameter($config['instance_url'], 'mosparo.instance_url');
-        $this->assertParameter($config['uuid'], 'mosparo.uuid');
-        $this->assertParameter($config['public_key'], 'mosparo.public_key');
-        $this->assertParameter($config['private_key'], 'mosparo.private_key');
+
+        $this->assertParameter('default', 'mosparo.default_project');
+
+        $this->assertParameter($config['instance_url'], 'mosparo.default.instance_url');
+        $this->assertParameter($config['uuid'], 'mosparo.default.uuid');
+        $this->assertParameter($config['public_key'], 'mosparo.default.public_key');
+        $this->assertParameter($config['private_key'], 'mosparo.default.private_key');
+    }
+
+    public function testParametersWithMultiConfig(): void
+    {
+        $this->createSampleMultiConfiguration();
+        $config = $this->getSampleMutliConfig();
+
+        $this->assertParameter($config['default_project'], 'mosparo.default_project');
+
+        $this->assertParameter($config['projects']['config_1']['instance_url'], 'mosparo.config_1.instance_url');
+        $this->assertParameter($config['projects']['config_1']['uuid'], 'mosparo.config_1.uuid');
+        $this->assertParameter($config['projects']['config_1']['public_key'], 'mosparo.config_1.public_key');
+        $this->assertParameter($config['projects']['config_1']['private_key'], 'mosparo.config_1.private_key');
+
+        $this->assertParameter($config['projects']['config_2']['instance_url'], 'mosparo.config_2.instance_url');
+        $this->assertParameter($config['projects']['config_2']['uuid'], 'mosparo.config_2.uuid');
+        $this->assertParameter($config['projects']['config_2']['public_key'], 'mosparo.config_2.public_key');
+        $this->assertParameter($config['projects']['config_2']['private_key'], 'mosparo.config_2.private_key');
     }
 
     public function testExtensionAlias(): void
@@ -98,6 +119,35 @@ instance_url: https://example.com
 uuid: c75cde8e-681e-4618-b4c9-02f0636bdf25
 public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
 private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
+EOF;
+
+        return (new Parser())->parse($yaml);
+    }
+
+    protected function createSampleMultiConfiguration(): void
+    {
+        $this->configuration = new ContainerBuilder();
+        $loader = new MosparoExtension();
+        $config = $this->getSampleMutliConfig();
+        $loader->load([$config], $this->configuration);
+        $this->assertInstanceOf(ContainerBuilder::class, $this->configuration);
+    }
+
+    protected function getSampleMutliConfig()
+    {
+        $yaml = <<<'EOF'
+default_project: config_1
+projects:
+    config_1:
+        instance_url: https://example.com
+        uuid: c75cde8e-681e-4618-b4c9-02f0636bdf25
+        public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
+        private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
+    config_2:
+        instance_url: https://example.com
+        uuid: c75cde8e-681e-4618-b4c9-02f0636bdf25
+        public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
+        private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
 EOF;
 
         return (new Parser())->parse($yaml);

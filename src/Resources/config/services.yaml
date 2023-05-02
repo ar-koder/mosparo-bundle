@@ -10,18 +10,16 @@ services:
 
     Mosparo\MosparoBundle\Form\Type\MosparoType:
         arguments:
-            - '%mosparo.instance_url%'
-            - '%mosparo.uuid%'
-            - '%mosparo.public_key%'
-            - '%mosparo.private_key%'
+            - '%mosparo.default_project%'
+            - '@parameter_bag'
             - '%mosparo.enabled%'
         tags:
             - { name: form.type }
 
     Mosparo\MosparoBundle\Validator\IsValidMosparoValidator:
         arguments:
-            - '@mosparo.client'
             - '@request_stack'
+            - '@parameter_bag'
             - '%mosparo.enabled%'
         tags:
             - { name: validator.constraint_validator, alias: is_valid_mosparo_validator }

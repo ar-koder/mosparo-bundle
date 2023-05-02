@@ -54,6 +54,7 @@ return $config
         'no_trailing_comma_in_singleline' => false,
         'declare_strict_types' => true,
         'php_unit_test_class_requires_covers' => false,
+        'method_chaining_indentation' => false,
         'concat_space' => ['spacing' => 'one']
     ])
 ;

@@ -23,19 +23,16 @@ class ConfigurationTest extends TestCase
 {
     /**
      * @dataProvider dataForProcessedConfiguration
-     *
-     * @param mixed $configs
-     * @param mixed $expectedConfig
      */
-    public function testProcessedConfiguration($configs, $expectedConfig)
+    public function testProcessedConfiguration(array $configs, array $expectedConfig): void
     {
         $processor = new Processor();
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
-        self::assertSame($expectedConfig, $config);
+        self::assertEquals($expectedConfig, $config);
     }
 
-    public function dataForProcessedConfiguration()
+    public function dataForProcessedConfiguration(): array
     {
         return [
             [
@@ -48,12 +45,17 @@ class ConfigurationTest extends TestCase
                     ],
                 ],
                 [
-                    'instance_url' => 'https://example.com',
-                    'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
-                    'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
-                    'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
-                    'guzzle_options' => [],
                     'enabled' => true,
+                    'default_project' => 'default',
+                    'projects' => [
+                        'default' => [
+                            'instance_url' => 'https://example.com',
+                            'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
+                            'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                            'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            'verify_ssl' => true,
+                        ],
+                    ],
                 ],
             ],
             [
@@ -63,20 +65,62 @@ class ConfigurationTest extends TestCase
                         'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
                         'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
                         'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
-                        'guzzle_options' => [
-                            ['option' => 'verify', 'value' => false],
+                        'verify_ssl' => false,
+                    ],
+                ],
+                [
+                    'enabled' => true,
+                    'default_project' => 'default',
+                    'projects' => [
+                        'default' => [
+                            'instance_url' => 'https://example.com',
+                            'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
+                            'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                            'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            'verify_ssl' => false,
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'mosparo' => [
+                        'default_project' => 'forms',
+                        'projects' => [
+                            'forms' => [
+                                'instance_url' => 'https://example.com',
+                                'uuid' => 'b4c9b4c9-681e-4618-b4c9-02f0636bdf25',
+                                'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                                'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            ],
+                            'login' => [
+                                'instance_url' => 'https://example.com',
+                                'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
+                                'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                                'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            ],
                         ],
                     ],
                 ],
                 [
-                    'instance_url' => 'https://example.com',
-                    'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
-                    'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
-                    'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
-                    'guzzle_options' => [
-                        'verify' => false,
-                    ],
                     'enabled' => true,
+                    'default_project' => 'forms',
+                    'projects' => [
+                        'forms' => [
+                            'instance_url' => 'https://example.com',
+                            'uuid' => 'b4c9b4c9-681e-4618-b4c9-02f0636bdf25',
+                            'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                            'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            'verify_ssl' => true,
+                        ],
+                        'login' => [
+                            'instance_url' => 'https://example.com',
+                            'uuid' => 'c75cde8e-681e-4618-b4c9-02f0636bdf25',
+                            'public_key' => 'xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY',
+                            'private_key' => 'xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU',
+                            'verify_ssl' => true,
+                        ],
+                    ],
                 ],
             ],
         ];

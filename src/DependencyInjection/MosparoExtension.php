@@ -28,7 +28,15 @@ class MosparoExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($config as $key => $value) {
-            $container->setParameter(sprintf('mosparo.%s', $key), $value);
+            if ('projects' === $key) {
+                foreach ($value as $project => $settings) {
+                    foreach ($settings as $settingKey => $settingValue) {
+                        $container->setParameter(sprintf('mosparo.%s.%s', $project, $settingKey), $settingValue);
+                    }
+                }
+            } else {
+                $container->setParameter(sprintf('mosparo.%s', $key), $value);
+            }
         }
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

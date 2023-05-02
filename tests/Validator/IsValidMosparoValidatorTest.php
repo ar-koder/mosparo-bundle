@@ -13,15 +13,18 @@ declare(strict_types=1);
 namespace Mosparo\MosparoBundle\Tests\Validator;
 
 use Mosparo\ApiClient\VerificationResult;
+use Mosparo\MosparoBundle\Form\Type\MosparoType;
 use Mosparo\MosparoBundle\Services\MosparoClient;
 use Mosparo\MosparoBundle\Tests\Traits\FormTrait;
 use Mosparo\MosparoBundle\Validator\IsValidMosparo;
 use Mosparo\MosparoBundle\Validator\IsValidMosparoValidator;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Validator\Constraints\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
@@ -46,6 +49,12 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         parent::setUp();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->tearDownForm();
+    }
+
     protected function makeValidator(
         bool $submittable = false,
         bool $valid = false,
@@ -54,7 +63,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         ?string $submitToken = self::SUBMIT_TOKEN,
         ?string $validationToken = self::VALIDATION_TOKEN,
         ?bool $enabled = true
-    ): IsValidMosparoValidator {
+    ): ConstraintValidatorInterface|InvocationMocker {
         $requestStack = $this->createMock(RequestStack::class);
         $request = $this->createMock(Request::class);
         $request->method('get')
@@ -83,7 +92,15 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             )
         );
 
-        return new IsValidMosparoValidator($client, $requestStack, $enabled);
+        $validator = $this->getMockBuilder(IsValidMosparoValidator::class)
+            ->setConstructorArgs([$requestStack, $this->configuration->getParameterBag(), $enabled])
+            ->onlyMethods(['getClient'])
+            ->getMock()
+        ;
+
+        $validator->method('getClient')->willReturn($client);
+
+        return $validator;
     }
 
     protected function setValidator(
@@ -100,17 +117,41 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         $this->validator->initialize($this->context);
     }
 
-    protected function createValidator(): IsValidMosparoValidator
+    protected function createValidator(): ConstraintValidatorInterface|InvocationMocker
     {
         return $this->makeValidator();
+    }
+
+    public function testReturnClient(): void
+    {
+        $submitToken = self::SUBMIT_TOKEN;
+        $validationToken = self::VALIDATION_TOKEN;
+        $requestStack = $this->createMock(RequestStack::class);
+        $request = $this->createMock(Request::class);
+        $request->method('get')
+            ->willReturnCallback(
+                function ($query) use ($submitToken, $validationToken) {
+                    return match ($query) {
+                        '_mosparo_submitToken' => $submitToken,
+                        '_mosparo_validationToken' => $validationToken,
+                    };
+                }
+            )
+        ;
+        $requestStack->method('getMainRequest')->willReturn($request);
+
+        $validator = new IsValidMosparoValidator($requestStack, $this->configuration->getParameterBag());
+        self::assertInstanceOf(MosparoClient::class, $validator->getClient());
     }
 
     public function testIsValid(): void
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
         ;
+
+        $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
         $this->setRoot($form);
@@ -130,8 +171,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
         ;
+
+        $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
         $this->setRoot($form);
@@ -155,8 +198,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
         ;
+
+        $this->setPropertyPath('mosparo');
 
         $form->submit(['submit' => '']);
         $this->setRoot($form);
@@ -172,7 +217,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         );
 
         $this->validator->validate(null, new IsValidMosparo());
-        $this->buildViolation('Missing in form data, verification not possible.')->assertRaised();
+        $this->buildViolation('Missing in form data, verification not possible.')->atPath('mosparo')->assertRaised();
     }
 
     public function testIsNested(): void
@@ -187,8 +232,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
                     'allow_add' => true,
                 ]
             )
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
         ;
+
+        $this->setPropertyPath('mosparo');
 
         $form->submit(
             [
@@ -210,7 +257,6 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
                 'name[collection][1]' => VerificationResult::FIELD_VALID,
             ]
         );
-
         $this->validator->validate(null, new IsValidMosparo());
         $this->assertNoViolation();
     }
@@ -232,8 +278,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
         ;
+
+        $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
         $this->setRoot($form);
@@ -249,6 +297,6 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         );
 
         $this->validator->validate(null, new IsValidMosparo());
-        $this->buildViolation(IsValidMosparo::INVALID_TOKEN)->assertRaised();
+        $this->buildViolation(IsValidMosparo::INVALID_TOKEN)->atPath('mosparo')->assertRaised();
     }
 }

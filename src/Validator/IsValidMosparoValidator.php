@@ -14,6 +14,7 @@ namespace Mosparo\MosparoBundle\Validator;
 
 use Mosparo\MosparoBundle\Serializer\FormNormalizer;
 use Mosparo\MosparoBundle\Services\MosparoClient;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
@@ -24,10 +25,20 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class IsValidMosparoValidator extends ConstraintValidator
 {
     public function __construct(
-        private MosparoClient $client,
         private RequestStack $requestStack,
+        private ParameterBagInterface $parameters,
         private bool $enabled = true,
     ) {
+    }
+
+    public function getClient(string $project = 'default'): MosparoClient
+    {
+        $host = $this->parameters->get(sprintf('mosparo.%s.%s', $project, 'instance_url'));
+        $publicKey = $this->parameters->get(sprintf('mosparo.%s.%s', $project, 'public_key'));
+        $privateKey = $this->parameters->get(sprintf('mosparo.%s.%s', $project, 'private_key'));
+        $verifySsl = $this->parameters->get(sprintf('mosparo.%s.%s', $project, 'verify_ssl'));
+
+        return MosparoClient::make($host, $publicKey, $privateKey, $verifySsl);
     }
 
     public function validate($value, Constraint $constraint): void
@@ -57,9 +68,27 @@ class IsValidMosparoValidator extends ConstraintValidator
             if (!$form instanceof Form) {
                 throw new UnexpectedTypeException($form, Form::class);
             }
-
+            $field = $form->get($this->context->getPropertyPath());
+            $project = $field->getConfig()
+                ->getOption('project', $this->parameters->get('mosparo.default_project'))
+            ;
             $formData = (new FormNormalizer())->normalize($form);
-            $result = $this->client->verifySubmission($formData, $mosparoSubmitToken, $mosparoValidationToken);
+            $result = $this
+                ->getClient($project)
+                ->verifySubmission($formData, $mosparoSubmitToken, $mosparoValidationToken)
+            ;
+
+            //            // Confirm that all required fields were verified
+            //            $verifiedFields = array_keys($result->getVerifiedFields());
+            //            $fieldDifference = array_diff($requiredFields, $verifiedFields);
+            //            $verifiableFieldDifference = array_diff($verifiableFields, $verifiedFields);
+            //
+            //            if ($result->isSubmittable() && empty($fieldDifference) && empty($verifiableFieldDifference)) {
+            //                // Remove the mosparo field from the record since it is not needed in the process
+            //                $record->remove_field($mosparoField['id']);
+            //                return;
+            //            }
+
             if (!$result->isSubmittable()) {
                 if (\count($result->getIssues()) > 0) {
                     foreach ($result->getIssues() as $issue) {
@@ -76,7 +105,7 @@ class IsValidMosparoValidator extends ConstraintValidator
                     ->addViolation()
                 ;
             }
-        } catch (\Exception|ExceptionInterface) {
+        } catch (\Exception|ExceptionInterface $e) {
             $this->context->buildViolation($constraint::ERROR)
                 ->addViolation()
             ;

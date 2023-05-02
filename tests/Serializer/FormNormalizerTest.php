@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\Tests\Serializer;
 
+use Mosparo\MosparoBundle\Form\Type\MosparoType;
 use Mosparo\MosparoBundle\Serializer\FormNormalizer;
 use Mosparo\MosparoBundle\Tests\Traits\FormTrait;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +66,6 @@ class FormNormalizerTest extends TestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
         ;
 
         self::assertFalse($this->normalizer->supportsNormalization($form));
@@ -75,7 +75,7 @@ class FormNormalizerTest extends TestCase
     {
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
             ->submit(['name' => 'John Example', 'submit' => ''])
         ;
 
@@ -93,7 +93,7 @@ class FormNormalizerTest extends TestCase
 
         $form = $this->getCompoundForm([])
             ->add('name', TextType::class)
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
             ->submit(['name' => 'John Example', 'submit' => ''])
         ;
 
@@ -121,7 +121,7 @@ class FormNormalizerTest extends TestCase
                     'allow_add' => true,
                 ]
             )
-            ->add($this->getSubmitButton('submit'))
+            ->add('mosparo', MosparoType::class)
             ->submit(
                 [
                     'name' => 'John Example',

@@ -51,6 +51,12 @@ class MosparoClientTest extends TestCase
         $this->handlerStack->push($historyMiddleware);
     }
 
+    public function testSingletonInstance(): void
+    {
+        $apiClient = MosparoClient::make(self::INSTANCE_URL, self::PUBLIC_KEY, self::PRIVATE_KEY);
+        self::assertInstanceOf(MosparoClient::class, $apiClient);
+    }
+
     public function testVerifySubmissionWithoutTokens(): void
     {
         $this->expectException(Exception::class);

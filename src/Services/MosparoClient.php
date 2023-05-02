@@ -16,4 +16,21 @@ use Mosparo\ApiClient\Client;
 
 class MosparoClient extends Client
 {
+    private static MosparoClient $instance;
+
+    public static function make(string $host, string $publicKey, string $privateKey, bool $verifySsl = true): self
+    {
+        if (empty(self::$instance)) {
+            self::$instance = new self(
+                $host,
+                $publicKey,
+                $privateKey,
+                [
+                    'verify' => $verifySsl,
+                ]
+            );
+        }
+
+        return self::$instance;
+    }
 }
