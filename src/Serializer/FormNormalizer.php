@@ -103,7 +103,7 @@ class FormNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
 
     private function parseFormData(FormInterface $form, array &$data, array $ignoredFieldTypes = [], array $verifiableFieldTypes = []): void
     {
-        if (\is_array($form->all()) && $form->count()) {
+        if ($form->count() > 0) {
             foreach ($form->all() as $field) {
                 $this->parseFormData($field, $data, $ignoredFieldTypes, $verifiableFieldTypes);
             }
