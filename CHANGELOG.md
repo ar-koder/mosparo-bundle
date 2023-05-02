@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.1.0...v1.2.0) (2023-05-02)
+
+
+### Features
+
+* add multi mosparo configs ([23279e8](https://github.com/arnaud-ritti/mosparo-bundle/commit/23279e8f9fc0d36ae153dbc64d9a3c904a5db65c))
+* allow allowed FormType filtering ([ad23d7d](https://github.com/arnaud-ritti/mosparo-bundle/commit/ad23d7dfef87d3d6b831cd399ea639b75af17e1e))
+* handle Bypass field validation ([8d2c34d](https://github.com/arnaud-ritti/mosparo-bundle/commit/8d2c34d4951949c2fd2a4e5db5d682c73532bb9b))
+
 ## [1.1.0](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.0.0...v1.1.0) (2023-04-29)
 
 ### Features
