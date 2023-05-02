@@ -73,39 +73,41 @@ class IsValidMosparoValidator extends ConstraintValidator
             $project = $field->getConfig()
                 ->getOption('project', $this->parameters->get('mosparo.default_project'))
             ;
-            $formData = $this->normalizer->normalize($form);
+            [
+                'formData' => $formData,
+                'requiredFields' => $requiredFields,
+                'verifiableFields' => $verifiableFields
+            ] = $this->normalizer->normalize($form);
+
             $result = $this
                 ->getClient($project)
                 ->verifySubmission($formData, $mosparoSubmitToken, $mosparoValidationToken)
             ;
 
-            //            // Confirm that all required fields were verified
-            //            $verifiedFields = array_keys($result->getVerifiedFields());
-            //            $fieldDifference = array_diff($requiredFields, $verifiedFields);
-            //            $verifiableFieldDifference = array_diff($verifiableFields, $verifiedFields);
-            //
-            //            if ($result->isSubmittable() && empty($fieldDifference) && empty($verifiableFieldDifference)) {
-            //                // Remove the mosparo field from the record since it is not needed in the process
-            //                $record->remove_field($mosparoField['id']);
-            //                return;
-            //            }
+            // Confirm that all required fields were verified
+            $verifiedFields = array_keys($result->getVerifiedFields());
+            $fieldDifference = array_diff($requiredFields, $verifiedFields);
+            $verifiableFieldDifference = array_diff($verifiableFields, $verifiedFields);
 
-            if (!$result->isSubmittable()) {
-                if (\count($result->getIssues()) > 0) {
-                    foreach ($result->getIssues() as $issue) {
-                        if (!empty($issue['message'])) {
-                            $this->context->buildViolation($issue['message'])
-                                ->addViolation()
-                            ;
-                        }
-                    }
-
-                    return;
-                }
-                $this->context->buildViolation($constraint::VERIFICATION_FAILED)
-                    ->addViolation()
-                ;
+            if ($result->isSubmittable() && empty($fieldDifference) && empty($verifiableFieldDifference)) {
+                return;
             }
+
+            if (\count($result->getIssues()) > 0) {
+                foreach ($result->getIssues() as $issue) {
+                    if (!empty($issue['message'])) {
+                        $this->context->buildViolation($issue['message'])
+                            ->addViolation()
+                        ;
+                    }
+                }
+
+                return;
+            }
+
+            $this->context->buildViolation($constraint::VERIFICATION_FAILED)
+                ->addViolation()
+            ;
         } catch (\Exception|ExceptionInterface $e) {
             $this->context->buildViolation($constraint::ERROR)
                 ->addViolation()

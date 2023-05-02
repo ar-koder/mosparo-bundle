@@ -302,4 +302,27 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate(null, new IsValidMosparo());
         $this->buildViolation(IsValidMosparo::INVALID_TOKEN)->atPath('mosparo')->assertRaised();
     }
+
+    public function testVerificationFailed(): void
+    {
+        $form = $this->getCompoundForm([])
+            ->add('name', TextType::class)
+            ->add('mosparo', MosparoType::class)
+        ;
+
+        $this->setPropertyPath('mosparo');
+
+        $form->submit(['name' => 'John Example', 'submit' => '']);
+        $this->setRoot($form);
+        $this->setValidator(
+            false,
+            false,
+            [
+                'name[name]' => VerificationResult::FIELD_INVALID,
+            ]
+        );
+
+        $this->validator->validate(null, new IsValidMosparo());
+        $this->buildViolation(IsValidMosparo::VERIFICATION_FAILED)->atPath('mosparo')->assertRaised();
+    }
 }
