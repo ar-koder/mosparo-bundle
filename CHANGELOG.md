@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.2.0...v1.2.1) (2023-05-03)
+
+
+### Bug Fixes
+
+* env configuration errore ([8a090e6](https://github.com/arnaud-ritti/mosparo-bundle/commit/8a090e67ce4dfc311b254453532597a3a2755d3e))
+
 ## [1.2.0](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.1.0...v1.2.0) (2023-05-02)
 
 
