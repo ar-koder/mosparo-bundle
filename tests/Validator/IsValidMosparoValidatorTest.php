@@ -154,6 +154,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
@@ -162,7 +163,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             true,
             true,
             [
-                'name[name]' => VerificationResult::FIELD_VALID,
+                'form[name]' => VerificationResult::FIELD_VALID,
             ]
         );
 
@@ -177,6 +178,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
@@ -185,7 +187,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             false,
             false,
             [
-                'name[name]' => VerificationResult::FIELD_INVALID,
+                'form[name]' => VerificationResult::FIELD_INVALID,
             ],
             [],
             self::SUBMIT_TOKEN,
@@ -204,6 +206,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(['submit' => '']);
@@ -212,10 +215,10 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             false,
             false,
             [
-                'name[name]' => VerificationResult::FIELD_INVALID,
+                'form[name]' => VerificationResult::FIELD_INVALID,
             ],
             [
-                ['name' => 'name[name]', 'message' => 'Missing in form data, verification not possible.'],
+                ['name' => 'form[name]', 'message' => 'Missing in form data, verification not possible.'],
             ]
         );
 
@@ -238,6 +241,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(
@@ -255,9 +259,9 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             true,
             true,
             [
-                'name[name]' => VerificationResult::FIELD_VALID,
-                'name[collection][0]' => VerificationResult::FIELD_VALID,
-                'name[collection][1]' => VerificationResult::FIELD_VALID,
+                'form[name]' => VerificationResult::FIELD_VALID,
+                'form[collection][0]' => VerificationResult::FIELD_VALID,
+                'form[collection][1]' => VerificationResult::FIELD_VALID,
             ]
         );
         $this->validator->validate(null, new IsValidMosparo());
@@ -284,6 +288,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
@@ -292,7 +297,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             true,
             true,
             [
-                'name[name]' => VerificationResult::FIELD_VALID,
+                'form[name]' => VerificationResult::FIELD_VALID,
             ],
             [],
             null,
@@ -310,6 +315,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             ->add('mosparo', MosparoType::class)
         ;
 
+        $this->setObject($form->get('mosparo'));
         $this->setPropertyPath('mosparo');
 
         $form->submit(['name' => 'John Example', 'submit' => '']);
@@ -318,7 +324,7 @@ class IsValidMosparoValidatorTest extends ConstraintValidatorTestCase
             false,
             false,
             [
-                'name[name]' => VerificationResult::FIELD_INVALID,
+                'form[name]' => VerificationResult::FIELD_INVALID,
             ]
         );
 

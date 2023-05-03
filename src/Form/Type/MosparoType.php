@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\Form\Type;
 
+use Mosparo\ApiClient\Exception;
 use Mosparo\MosparoBundle\Validator\IsValidMosparo;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
@@ -58,12 +60,27 @@ class MosparoType extends AbstractType
         $resolver->setAllowedTypes('cssResourceUrl', 'string');
     }
 
+    /**
+     * @throws Exception
+     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
+        $hostKey = sprintf('mosparo.%s.%s', $options['project'], 'instance_url');
+        $host = $this->parameters->get($hostKey);
+        if (false === filter_var($host, \FILTER_VALIDATE_URL)) {
+            throw new Exception(sprintf('Please check your "%s". "%s" is not a valid URL', $hostKey, $host));
+        }
+
+        $uuidKey = sprintf('mosparo.%s.%s', $options['project'], 'uuid');
+        $uuid = $this->parameters->get($uuidKey);
+        if (false === Uuid::isValid($uuid)) {
+            throw new Exception(sprintf('Please check your "%s". "%s" is not a valid UUID', $uuidKey, $uuid));
+        }
+
         $view->vars['mosparo'] = [
             'enabled' => $this->enabled,
-            'instance_url' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'instance_url')),
-            'uuid' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'uuid')),
+            'instance_url' => $host,
+            'uuid' => $uuid,
             'public_key' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'public_key')),
             'private_key' => $this->parameters->get(sprintf('mosparo.%s.%s', $options['project'], 'private_key')),
             'options' => [

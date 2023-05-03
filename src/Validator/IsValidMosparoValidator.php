@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\Validator;
 
-use Mosparo\MosparoBundle\Serializer\FormNormalizer;
 use Mosparo\MosparoBundle\Services\MosparoClient;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -27,7 +27,7 @@ class IsValidMosparoValidator extends ConstraintValidator
     public function __construct(
         private RequestStack $requestStack,
         private ParameterBagInterface $parameters,
-        private FormNormalizer $normalizer,
+        private NormalizerInterface $normalizer,
         private bool $enabled = true,
     ) {
     }
@@ -69,15 +69,16 @@ class IsValidMosparoValidator extends ConstraintValidator
             if (!$form instanceof Form) {
                 throw new UnexpectedTypeException($form, Form::class);
             }
-            $field = $form->get($this->context->getPropertyPath());
+
+            $field = $this->context->getObject();
             $project = $field->getConfig()
                 ->getOption('project', $this->parameters->get('mosparo.default_project'))
             ;
-            [
-                'formData' => $formData,
-                'requiredFields' => $requiredFields,
-                'verifiableFields' => $verifiableFields
-            ] = $this->normalizer->normalize($form);
+            $normalizedDatas = $this->normalizer->normalize($form);
+
+            $formData = $normalizedDatas['formData'] ?? [];
+            $requiredFields = $normalizedDatas['requiredFields'] ?? [];
+            $verifiableFields = $normalizedDatas['verifiableFields'] ?? [];
 
             $result = $this
                 ->getClient($project)
@@ -108,7 +109,7 @@ class IsValidMosparoValidator extends ConstraintValidator
             $this->context->buildViolation($constraint::VERIFICATION_FAILED)
                 ->addViolation()
             ;
-        } catch (\Exception|ExceptionInterface $e) {
+        } catch (\Exception|ExceptionInterface) {
             $this->context->buildViolation($constraint::ERROR)
                 ->addViolation()
             ;

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\DependencyInjection;
 
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -36,7 +35,6 @@ class Configuration implements ConfigurationInterface
                     if (\array_key_exists('projects', $v) || \array_key_exists('project', $v)) {
                         return false;
                     }
-
                     // Is there actually anything to use once excluded keys are considered?
                     return (bool) array_diff_key($v, $excludedKeys);
                 })
@@ -46,7 +44,6 @@ class Configuration implements ConfigurationInterface
                         $project[$key] = $v[$key];
                         unset($v[$key]);
                     }
-
                     $v['projects'] = [($v['default_project'] ?? 'default') => $project];
 
                     return $v;
@@ -56,27 +53,13 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('enabled')->defaultTrue()->end()
                 ->scalarNode('default_project')->defaultValue('default')->end()
                 ->arrayNode('projects')
-                    ->isRequired()
-                    ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('instance_url')
-                                ->isRequired()
-                                ->validate()
-                                    ->ifTrue(static fn (string $value) => false === filter_var($value, \FILTER_VALIDATE_URL))
-                                    ->thenInvalid('"instance_url" is not a valid URL')
-                                ->end()
-                            ->end()
-                            ->scalarNode('uuid')
-                                ->isRequired()
-                                ->validate()
-                                    ->ifTrue(static fn (string $value) => true !== Uuid::isValid($value))
-                                    ->thenInvalid('"uuid" is not a valid UUID')
-                                ->end()
-                            ->end()
-                            ->scalarNode('public_key')->isRequired()->cannotBeEmpty()->end()
-                            ->scalarNode('private_key')->isRequired()->cannotBeEmpty()->end()
+                            ->scalarNode('instance_url')->isRequired()->end()
+                            ->scalarNode('uuid')->isRequired()->end()
+                            ->scalarNode('public_key')->isRequired()->end()
+                            ->scalarNode('private_key')->isRequired()->end()
                             ->booleanNode('verify_ssl')->defaultTrue()->end()
                         ->end()
                     ->end()

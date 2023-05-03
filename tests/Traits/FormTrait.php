@@ -50,7 +50,7 @@ trait FormTrait
 
     private function getCompoundForm($data, array $options = []): \Symfony\Component\Form\FormInterface
     {
-        return $this->getBuilder('name', \is_object($data) ? $data::class : null, $options)
+        return $this->getBuilder('form', \is_object($data) ? $data::class : null, $options)
             ->setData($data)
             ->setCompound(true)
             ->setDataMapper(new DataMapper())

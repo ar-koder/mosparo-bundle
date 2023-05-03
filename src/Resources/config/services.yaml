@@ -23,8 +23,7 @@ services:
         tags:
             - { name: serializer.normalizer }
 
-    Mosparo\MosparoBundle\Serializer\FormNormalizer:
-        alias: mosparo.form.normalizer
+    Mosparo\MosparoBundle\Serializer\FormNormalizer: '@mosparo.form.normalizer'
 
     Mosparo\MosparoBundle\Validator\IsValidMosparoValidator:
         arguments:

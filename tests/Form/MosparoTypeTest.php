@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Mosparo\MosparoBundle\Tests\Form;
 
+use Mosparo\ApiClient\Exception;
 use Mosparo\MosparoBundle\DependencyInjection\MosparoExtension;
 use Mosparo\MosparoBundle\Form\Type\MosparoType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -57,6 +58,16 @@ projects:
         uuid: df056fb7-04a1-4d12-abde-70b75ece3847
         public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
         private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
+    bad_instance:
+        instance_url: lorem-ipsum
+        uuid: df056fb7-04a1-4d12-abde-70b75ece3847
+        public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
+        private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
+    bad_uuid:
+        instance_url: https://example.com
+        uuid: azerty-04a1-4d12-abde-70b75ece3847
+        public_key: xo0EZEo5eAEEAMVGSnNwqDdaMTZLxY
+        private_key: xcFGBGRKOXgBBADFRkpzcKg3WjE2S8WPpXAVNdU
 EOF;
 
         return (new Parser())->parse($yaml);
@@ -87,6 +98,26 @@ EOF;
         self::assertSame($config['projects']['default']['private_key'], $view->vars['mosparo']['private_key']);
         self::assertArrayHasKey('options', $view->vars['mosparo']);
         self::assertTrue($view->vars['mosparo']['enabled']);
+    }
+
+    public function testInstanceIsNotURLOptions(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Please check your "mosparo.bad_instance.instance_url". "lorem-ipsum" is not a valid URL');
+
+        $this->factory->create(MosparoType::class, [], [
+            'project' => 'bad_instance',
+        ])->createView();
+    }
+
+    public function testUuidIsNotValidOptions(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Please check your "mosparo.bad_uuid.uuid". "azerty-04a1-4d12-abde-70b75ece3847" is not a valid UUID');
+
+        $this->factory->create(MosparoType::class, [], [
+            'project' => 'bad_uuid',
+        ])->createView();
     }
 
     public function testProjectOptions(): void

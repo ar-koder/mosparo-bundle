@@ -96,13 +96,13 @@ class FormNormalizerTest extends TestCase
     {
         $expected = [
             'formData' => [
-                'name[name]' => 'John Example',
+                'form[name]' => 'John Example',
             ],
             'requiredFields' => [
-                'name[name]',
+                'form[name]',
             ],
             'verifiableFields' => [
-                'name[name]',
+                'form[name]',
             ],
         ];
 
@@ -119,18 +119,18 @@ class FormNormalizerTest extends TestCase
     {
         $expected = [
             'formData' => [
-                'name[name]' => 'John Example',
-                'name[password]' => 'password',
-                'name[optional]' => null,
+                'form[name]' => 'John Example',
+                'form[password]' => 'password',
+                'form[optional]' => null,
             ],
             'requiredFields' => [
-                'name[name]',
-                'name[password]',
+                'form[name]',
+                'form[password]',
             ],
             'verifiableFields' => [
-                'name[name]',
-                'name[password]',
-                'name[optional]',
+                'form[name]',
+                'form[password]',
+                'form[optional]',
             ],
         ];
 
@@ -175,19 +175,19 @@ class FormNormalizerTest extends TestCase
     {
         $expected = [
             'formData' => [
-                'name[name]' => 'John Example',
-                'name[collection][0]' => 'Entry 1',
-                'name[collection][1]' => 'Entry 2',
+                'form[name]' => 'John Example',
+                'form[collection][0]' => 'Entry 1',
+                'form[collection][1]' => 'Entry 2',
             ],
             'requiredFields' => [
-                'name[name]',
-                'name[collection][0]',
-                'name[collection][1]',
+                'form[name]',
+                'form[collection][0]',
+                'form[collection][1]',
             ],
             'verifiableFields' => [
-                'name[name]',
-                'name[collection][0]',
-                'name[collection][1]',
+                'form[name]',
+                'form[collection][0]',
+                'form[collection][1]',
             ],
         ];
 

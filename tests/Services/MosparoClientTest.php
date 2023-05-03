@@ -57,6 +57,14 @@ class MosparoClientTest extends TestCase
         self::assertInstanceOf(MosparoClient::class, $apiClient);
     }
 
+    public function testSingletonBadHostInstance(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Please check yours "instance_url". "example" is not a valid URL');
+
+        MosparoClient::make('example', self::PUBLIC_KEY, self::PRIVATE_KEY);
+    }
+
     public function testVerifySubmissionWithoutTokens(): void
     {
         $this->expectException(Exception::class);
