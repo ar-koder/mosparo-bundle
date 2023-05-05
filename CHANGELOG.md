@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.2.1...v1.2.2) (2023-05-05)
+
+
+### Bug Fixes
+
+* Added the German translations for the validator error messages. ([#6](https://github.com/arnaud-ritti/mosparo-bundle/issues/6)) ([4812952](https://github.com/arnaud-ritti/mosparo-bundle/commit/4812952cca310fb12de917ad2cef1b48a18f5455))
+
 ## [1.2.1](https://github.com/arnaud-ritti/mosparo-bundle/compare/v1.2.0...v1.2.1) (2023-05-03)
 
 
