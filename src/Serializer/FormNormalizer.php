@@ -120,13 +120,7 @@ class FormNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
                 return;
             }
 
-            $key = '';
-            $parent = $form;
-            do {
-                $key = ((string) $parent->getPropertyPath()) . $key;
-                $parent = $parent->getParent();
-            } while ($parent);
-
+            $key = $this->getKeyForField($form);
             $data['formData'][$key] = $form->getData();
 
             if ($form->isRequired()) {
@@ -141,6 +135,23 @@ class FormNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
                 $data['verifiableFields'][] = $key;
             }
         }
+    }
+
+    private function getKeyForField(FormInterface $field): string
+    {
+        $parent = null;
+        if ($field->getParent()) {
+            $parent = $this->getKeyForField($field->getParent());
+        }
+
+        $name = (string) $field->getName();
+        if ($parent) {
+            $key = sprintf('%s[%s]', $parent, $name);
+        } else {
+            $key = $name;
+        }
+
+        return $key;
     }
 
     /**
