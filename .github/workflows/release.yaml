@@ -15,7 +15,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Install PHP with extensions'
         uses: shivammathur/setup-php@v2
