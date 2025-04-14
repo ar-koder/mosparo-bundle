@@ -44,7 +44,7 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: clover.xml
 
-      - uses: google-github-actions/release-please-action@v3
+      - uses: google-github-actions/release-please-action@v4
         with:
           release-type: php
           package-name: mosparo-bundle
